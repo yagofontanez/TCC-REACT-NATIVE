@@ -1,20 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import TelaInicial from './screens/TelaInicial/TelaInicial';
+import TelaCadastro from './screens/TelaCadastro/TelaCadastro';
+import TelaLogin from './screens/TelaLogin/TelaLogin';
+import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-export default function App() {
+type Screen = 'Home' | 'Details' | 'Cadastro' | 'Login';
+
+const App: React.FC = () => {
+  const [currentScreen, setCurrentScreen] = React.useState<Screen>('Home');
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'Home':
+        return <TelaInicial navigate={setCurrentScreen} />;
+      case 'Cadastro':
+        return <TelaCadastro navigate={setCurrentScreen} />;
+      case 'Login':
+        return <TelaLogin navigate={setCurrentScreen} />;
+      default:
+        return <TelaInicial navigate={setCurrentScreen} />;
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      <Text>Hello World!!!</Text>
-      <StatusBar style="auto" />
+    <View style={{ flex: 1 }}>
+      {renderScreen()}
+      <Toast />
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
