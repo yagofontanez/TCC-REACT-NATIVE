@@ -13,11 +13,10 @@ import {
 import { grayApp, redApp, whiteApp } from "../../utils/colors";
 import * as Font from "expo-font";
 import AppLoading from "expo-app-loading";
-import { Picker } from "@react-native-picker/picker";
 import Toast from "react-native-toast-message";
 
 interface CadastroScreenProps {
-  navigate: (screen: "Home" | "Details" | "Cadastro" | "Login") => void;
+  navigate: (screen: "Home" | "TelaInicial" | "Cadastro" | "Login") => void;
 }
 
 const fetchFonts = () => {
@@ -34,14 +33,19 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
   const [EMAIL_PEDIDO, setEMAIL_PEDIDO] = useState("");
   const [TELEFONE_PEDIDO, setTELEFONE_PEDIDO] = useState("");
   const [FACULDADE_PEDIDO, setFACULDADE_PEDIDO] = useState("");
+  const [PONTO_PEDIDO, setPONTO_PEDIDO] = useState("");
+  const [faculdadeNome, setFaculdadeNome] = useState("");
+  const [pontoNome, setPontoNome] = useState("");
   const [faculdades, setFaculdades] = useState([]);
+  const [pontos, setPontos] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalPontosVisible, setModalPontosVisible] = useState(false);
 
   useEffect(() => {
     const fetchFaculdades = async () => {
       try {
         const response = await fetch(
-          "http://192.168.1.6:3000/faculdades-public"
+          "http://localhost:3000/faculdades-public"
         );
         const data = await response.json();
         setFaculdades(data);
@@ -50,7 +54,20 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
       }
     };
 
+    const fetchPontos = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/pontos-public"
+        );
+        const data = await response.json();
+        setPontos(data);
+      } catch(e) {
+        console.error("Erro ao buscar pontos:", e);
+      }
+    };
+
     fetchFaculdades();
+    fetchPontos();
   }, []);
 
   const handleSolicitaCadastro = async () => {
@@ -61,9 +78,10 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
         EMAIL_PEDIDO,
         TELEFONE_PEDIDO,
         FACULDADE_PEDIDO,
+        PONTO_PEDIDO,
       };
       const response = await fetch(
-        "http://192.168.1.6:3000/pedidosCadastro/pedidosCadastro",
+        "http://localhost:3000/pedidosCadastro/pedidosCadastro",
         {
           method: "POST",
           headers: {
@@ -106,11 +124,25 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
     <TouchableOpacity
       style={styles.modalItem}
       onPress={() => {
-        setFACULDADE_PEDIDO(item.NOME_FACULDADE);
+        setFACULDADE_PEDIDO(item.ID);
+        setFaculdadeNome(item.NOME_FACULDADE);
         setModalVisible(false);
       }}
     >
       <Text style={styles.modalItemText}>{item.NOME_FACULDADE}</Text>
+    </TouchableOpacity>
+  );
+
+  const renderPontoItem = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.modalItem}
+      onPress={() => {
+        setPONTO_PEDIDO(item.ID);
+        setPontoNome(item.NOME_PONTO);
+        setModalVisible(false);
+      }}
+    >
+      <Text style={styles.modalItemText}>{item.NOME_PONTO}</Text>
     </TouchableOpacity>
   );
 
@@ -157,7 +189,15 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
             onPress={() => setModalVisible(true)}
           >
             <Text style={styles.inputText}>
-              {FACULDADE_PEDIDO ? FACULDADE_PEDIDO : "Selecione sua Faculdade"}
+              {faculdadeNome ? faculdadeNome : "Selecione sua Faculdade"}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.input}
+            onPress={() => setModalPontosVisible(true)}
+          >
+            <Text style={styles.inputText}>
+              {pontoNome ? pontoNome : "Selecione seu Ponto"}
             </Text>
           </TouchableOpacity>
         </View>
@@ -190,6 +230,24 @@ const CadastroScreen: React.FC<CadastroScreenProps> = ({ navigate }) => {
                 keyExtractor={(item) => item.ID.toString()}
               />
               <Button title="Fechar" onPress={() => setModalVisible(false)} />
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
+          visible={modalPontosVisible}
+          animationType="slide"
+          transparent={true}
+          onRequestClose={() => setModalPontosVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <FlatList
+                data={pontos}
+                renderItem={renderPontoItem}
+                keyExtractor={(item) => item.ID.toString()}
+              />
+              <Button title="Fechar" onPress={() => setModalPontosVisible(false)}/>
             </View>
           </View>
         </Modal>

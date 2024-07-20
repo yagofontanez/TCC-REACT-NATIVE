@@ -17,7 +17,7 @@ import bgdPhoto from "./assets/imagemHalley.jpg";
 import { grayApp, redApp, whiteApp } from "../../utils/colors";
 
 interface InitialScreenProps {
-  navigate: (screen: "Home" | "Details" | "Cadastro" | "Login") => void;
+  navigate: (screen: "Home" | "TelaInicial" | "Cadastro" | "Login") => void;
 }
 
 const fetchFonts = () => {
@@ -54,7 +54,7 @@ const InitialScreen: React.FC<InitialScreenProps> = ({ navigate }) => {
         text1: "Login bem-sucedido",
         text2: "Você foi autenticado com sucesso.",
       });
-      navigate("Details");
+      navigate("TelaInicial");
     } catch (error) {
       console.error("Erro ao fazer login:", error);
     }

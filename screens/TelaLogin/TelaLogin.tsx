@@ -3,20 +3,18 @@ import {
   View,
   Text,
   TextInput,
-  Button,
+  TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  TouchableOpacity,
-  Linking,
 } from "react-native";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { grayApp, redApp, whiteApp } from "../../utils/colors";
+import bgdPhoto from "../../assets/imagemHalley.jpg";
 
 interface LoginScreenProps {
-  navigate: (screen: "Home" | "Details" | "Cadastro" | "Login") => void;
+  navigate: (screen: 'Home' | 'TelaInicial' | 'Cadastro' | 'Login' | 'TelaPrincipal', params?: any) => void;
 }
 
 const fetchFonts = () => {
@@ -28,38 +26,38 @@ const fetchFonts = () => {
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigate }) => {
   const [fontLoaded, setFontLoaded] = useState(false);
-  const [EMAIL, setEMAIL] = useState("");
-  const [SENHA, setSENHA] = useState("");
+  const [EMAIL, setEMAIL] = useState('');
+  const [SENHA, setSENHA] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://192.168.1.6:3000/admins/login", {
-        method: "POST",
+      const response = await fetch('http://localhost:3000/usuarios/login', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ EMAIL, SENHA }),
       });
-
-      if (!response.ok) {
-        throw new Error("Erro ao fazer login");
-      }
-
+  
       const result = await response.json();
-      const token = result.token;
-      await AsyncStorage.setItem("authToken", token);
+  
+      if (!response.ok) {
+        throw new Error('Erro ao fazer login');
+      }
+  
+      const { id, nome } = result;
       Toast.show({
-        type: "success",
-        text1: "Login bem-sucedido",
-        text2: "Você foi autenticado com sucesso.",
+        type: 'success',
+        text1: 'Login bem-sucedido',
+        text2: 'Você foi autenticado com sucesso.',
       });
-      navigate("Cadastro");
+      navigate('TelaPrincipal', { userId: id, nome }); 
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
+      console.error('Erro ao fazer login:', error);
       Toast.show({
-        type: "error",
-        text1: "Falha ao realizar login.",
-        text2: "Login não realizado",
+        type: 'error',
+        text1: 'Falha ao realizar login.',
+        text2: 'Email ou senha inválidos.',
       });
     }
   };
@@ -98,13 +96,13 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigate }) => {
         />
         <TouchableOpacity
           style={styles.buttonLogin}
-          onPress={() => handleLogin}
+          onPress={handleLogin}
         >
           <Text style={styles.buttonText}>Fazer Login</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonVoltar}
-          onPress={() => navigate("Home")}
+          onPress={() => navigate('Home')}
         >
           <Text style={styles.buttonText}>Voltar</Text>
         </TouchableOpacity>
@@ -127,27 +125,15 @@ const styles = StyleSheet.create({
     gap: 25,
     flexDirection: "column",
   },
-  containerButtons: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "flex-start",
-    justifyContent: "center",
-    gap: 15,
-  },
   title: {
     fontSize: 38,
     fontFamily: "Poppins-Bold",
-    color: `${redApp}`,
-    textAlign: 'center'
-  },
-  subtitle: {
-    fontSize: 26,
-    fontFamily: "Poppins-Bold",
-    color: `${grayApp}`,
+    color: redApp,
+    textAlign: 'center',
   },
   input: {
-    backgroundColor: `${whiteApp}`,
-    color: `${grayApp}`,
+    backgroundColor: whiteApp,
+    color: grayApp,
     width: 300,
     paddingBottom: 6,
     paddingTop: 6,
@@ -155,47 +141,34 @@ const styles = StyleSheet.create({
     paddingRight: 25,
     borderRadius: 25,
     height: 40,
-    display: "flex",
     justifyContent: "center",
   },
   buttonLogin: {
-    backgroundColor: `${redApp}`,
+    backgroundColor: redApp,
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 25,
     paddingLeft: 25,
     borderRadius: 25,
     width: 250,
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   buttonVoltar: {
-    backgroundColor: `${grayApp}`,
+    backgroundColor: grayApp,
     paddingTop: 10,
     paddingBottom: 10,
     paddingRight: 25,
     paddingLeft: 25,
     borderRadius: 25,
     width: 250,
-    display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
   buttonText: {
-    color: `${whiteApp}`,
+    color: whiteApp,
     fontSize: 16,
     fontFamily: "Poppins-Bold",
-  },
-  buttonText2: {
-
-  },
-  containerInputs: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 15,
   },
 });
 
