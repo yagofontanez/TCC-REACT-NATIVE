@@ -3,10 +3,13 @@ import TelaInicial from './screens/TelaInicial/TelaInicial';
 import TelaCadastro from './screens/TelaCadastro/TelaCadastro';
 import TelaLogin from './screens/TelaLogin/TelaLogin';
 import TelaPrincipal from './screens/TelaPrincipal/TelaPrincipal';
+import ViewPontos from './screens/ViewPontos/ViewPontos';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
+import ViewFaculdades from './screens/ViewFaculdades/ViewFaculdades';
+import TelaConfiguracao from './screens/TelaConfiguracao/TelaConfiguracao';
 
-type Screen = 'Home' | 'TelaInicial' | 'Cadastro' | 'Login' | 'TelaPrincipal';
+type Screen = 'Home' | 'TelaInicial' | 'Cadastro' | 'Login' | 'TelaPrincipal' | 'ViewPontos' | 'ViewFaculdades' | 'TelaConfiguracao';
 
 const App: React.FC = () => {
   const [currentScreen, setCurrentScreen] = React.useState<Screen>('Home');
@@ -31,6 +34,12 @@ const App: React.FC = () => {
         return <TelaLogin navigate={navigate} />;
       case 'TelaPrincipal':
         return <TelaPrincipal navigate={navigate} userId={userId} userName={userName} />; 
+      case 'ViewPontos':
+        return <ViewPontos navigate={navigate} />
+      case 'ViewFaculdades':
+        return <ViewFaculdades navigate={navigate} />
+      case 'TelaConfiguracao':
+        return <TelaConfiguracao navigate={navigate} userId={userId} userName={userName} />
       default:
         return <TelaInicial navigate={navigate} />;
     }

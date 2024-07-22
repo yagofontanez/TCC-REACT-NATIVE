@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  TouchableOpacity,
+} from "react-native";
 import AppLoading from "expo-app-loading";
 import * as Font from "expo-font";
 import { grayApp, greenApp, redApp, whiteApp } from "../../utils/colors";
@@ -9,10 +15,19 @@ import { FaCircleInfo } from "react-icons/fa6";
 import { FaEye } from "react-icons/fa";
 import { FaBook } from "react-icons/fa6";
 import { FaGear } from "react-icons/fa6";
+import Toast from "react-native-toast-message";
 
 interface PrincipalScreenProps {
   navigate: (
-    screen: "Home" | "TelaInicial" | "Cadastro" | "Login" | "TelaPrincipal",
+    screen:
+      | "Home"
+      | "TelaInicial"
+      | "Cadastro"
+      | "Login"
+      | "TelaPrincipal"
+      | "ViewPontos"
+      | "ViewFaculdades"
+      | "TelaConfiguracao",
     params?: any
   ) => void;
   userId: string | null;
@@ -85,6 +100,14 @@ const PrincipalScreen: React.FC<PrincipalScreenProps> = ({
     }
   }, [userId]);
 
+  const handleLogOff = () => {
+    navigate("Home");
+    Toast.show({
+      type: "success",
+      text1: "Você foi deslogado com sucesso!",
+    });
+  };
+
   if (!fontLoaded) {
     return (
       <AppLoading
@@ -107,7 +130,9 @@ const PrincipalScreen: React.FC<PrincipalScreenProps> = ({
             <Text style={styles.subTitle}>
               {objDate.dia}, {mesNome}
             </Text>
-            <IoMdLogOut color={redApp} size={30} />
+            <TouchableOpacity onPress={() => navigate('TelaConfiguracao')}>
+              <FaGear size={30} color={grayApp} />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.viewPoint}>
@@ -123,38 +148,50 @@ const PrincipalScreen: React.FC<PrincipalScreenProps> = ({
         </View>
       </View>
       <View style={styles.containerBoxes}>
-        <View style={styles.boxContainer}>
+        <TouchableOpacity
+          style={styles.boxContainer}
+          onPress={() => console.log("aqui conecta c a api do maps")}
+        >
           <View style={styles.alignBoxContent}>
             <Text style={styles.textoBoxes}>Marcar</Text>
             <Text style={styles.textoBoxesRed}>Ponto</Text>
           </View>
           <BsFillGeoAltFill style={styles.icon} size={60} color={redApp} />
-        </View>
-        <View style={styles.boxContainer}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxContainer}
+          onPress={() => console.log("aqui conecta c a api do maps")}
+        >
           <View style={styles.alignBoxContent}>
             <Text style={styles.textoBoxes}>Acompanhar</Text>
             <Text style={styles.textoBoxesRed}>Ponto</Text>
           </View>
           <FaCircleInfo style={styles.icon} size={60} color={grayApp} />
-        </View>
-        <View style={styles.boxContainer}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxContainer}
+          onPress={() => navigate("ViewPontos")}
+        >
           <View style={styles.alignBoxContent}>
             <Text style={styles.textoBoxes}>Ver</Text>
             <Text style={styles.textoBoxesRed}>Pontos</Text>
           </View>
           <FaEye style={styles.icon} size={60} color={grayApp} />
-        </View>
-        <View style={styles.boxContainer}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.boxContainer}
+          onPress={() => navigate("ViewFaculdades")}
+        >
           <View style={styles.alignBoxContent}>
             <Text style={styles.textoBoxes}>Ver</Text>
             <Text style={styles.textoBoxesRed}>Faculdades</Text>
           </View>
           <FaBook style={styles.icon} size={60} color={redApp} />
-        </View>
+        </TouchableOpacity>
       </View>
-      <View style={styles.viewConf}>
-        <FaGear size={32} color={grayApp} />
-      </View>
+      <TouchableOpacity onPress={handleLogOff} style={styles.viewConf}>
+        <IoMdLogOut color={redApp} size={32} />
+      </TouchableOpacity>
     </ImageBackground>
   );
 };
