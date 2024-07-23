@@ -40,8 +40,6 @@ const App: React.FC = () => {
         return <ViewFaculdades navigate={navigate} />
       case 'TelaConfiguracao':
         return <TelaConfiguracao navigate={navigate} userId={userId} userName={userName} />
-      default:
-        return <TelaInicial navigate={navigate} />;
     }
   };
 

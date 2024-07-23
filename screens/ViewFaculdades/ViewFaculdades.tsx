@@ -73,7 +73,7 @@ const ViewFaculdades: React.FC<InitialScreenProps> = ({ navigate }) => {
     >
       <View style={styles.container}>
         <Text style={styles.title}>Faculdades Disponíveis</Text>
-        <BlurView intensity={50} style={styles.blurContainer}>
+        <BlurView intensity={10} style={styles.blurContainer}>
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <View style={styles.listaPontosHeader}>
               <Text style={styles.columnHeader}>Nome</Text>
@@ -169,8 +169,11 @@ const styles = StyleSheet.create({
   blurContainer: {
     width: "90%",
     padding: 16,
-    borderRadius: 10,
+    borderRadius: 15,
     backgroundColor: "rgba(40, 40, 40, 0.3)",
+    borderColor: grayApp,
+    borderStyle: 'solid',
+    borderWidth: 2
   },
   scrollContainer: {
     flexGrow: 1,
